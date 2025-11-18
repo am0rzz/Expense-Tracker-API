@@ -15,5 +15,13 @@ class Register(APIView):
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response({'message': 'Register Failed!'}, status=status.HTTP_400_BAD_REQUEST)
     
-
-
+    def get(self,request):
+        """
+        USED ONLY DURING PRODUCTION!
+        """
+        queryset = User.objects.all()
+        serializer = SignupSerializer(queryset,many=True)
+        if serializer:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({'message': 'Couldn\'t Retrieve Users}'}, status=status.HTTP_400_BAD_REQUEST)
+    
