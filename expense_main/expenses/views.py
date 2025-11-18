@@ -33,7 +33,7 @@ class ExpenseViewSet(viewsets.ViewSet):
 
     def create(self, request):
         """
-        Create a new Model using a PUT request
+        Create a new Model using a POST request
         """
         serializer = ExpenseSerializer(data=request.data)
         if serializer.is_valid():
