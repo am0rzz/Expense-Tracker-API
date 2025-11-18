@@ -3,7 +3,6 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from .serializers import ExpenseSerializer
 from rest_framework.response import Response
-from rest_framework import serializers
 from .models import Expense
 from rest_framework import status
 # Create your views here.
@@ -15,15 +14,16 @@ class ExpenseViewSet(viewsets.ViewSet):
         """
         Retrieve all models using a GET request.
         """
-        queryset = Expense.objects.all()
+        queryset = Expense.objects.filter(owner=self.request.user)
         serializer = ExpenseSerializer(queryset, many=True)
+
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def retrieve(self, request, pk=None):
         """
         Retrieve an existing model using a GET request.
         """
-        queryset = Expense.objects.all()
+        queryset = Expense.objects.filter(owner=self.request.user)
         try:
             expense = get_object_or_404(queryset, pk=pk)
         except:
@@ -45,7 +45,7 @@ class ExpenseViewSet(viewsets.ViewSet):
         """
         Update exisiting Model using a PUT request
         """
-        queryset = Expense.objects.all()
+        queryset = Expense.objects.filter(owner=self.request.user)
         try:
             expense = get_object_or_404(queryset, pk=pk)
         except:
@@ -60,7 +60,7 @@ class ExpenseViewSet(viewsets.ViewSet):
         """
         Update exisiting Model using a PATCH request
         """
-        queryset = Expense.objects.all()
+        queryset = Expense.objects.filter(owner=self.request.user)
         expense = get_object_or_404(queryset, pk=pk)
         serializer = ExpenseSerializer(expense,data=request.data)
         if serializer.is_valid():
@@ -72,7 +72,7 @@ class ExpenseViewSet(viewsets.ViewSet):
         """
         Delete an existing Model using a DELETE request
         """
-        queryset = Expense.objects.all()
+        queryset = Expense.objects.filter(owner=self.request.user)
         try:
             expense = get_object_or_404(queryset, pk=pk)
         except:
