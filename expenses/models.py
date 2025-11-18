@@ -16,5 +16,4 @@ class Expense(models.Model):
         "HE" : "Health",
         "OT" : "Others"
     }
-    categories = ['Groceries', 'Leisure', 'Electronics', 'Utilities', 'Clothing', 'Health', 'Others']
     category = models.CharField(max_length=2, choices=category_choices, default="OT")
