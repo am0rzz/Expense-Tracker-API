@@ -4,6 +4,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from .models import User
 from .serializers import SignupSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.exceptions import AuthenticationFailed
+from django.contrib.auth import authenticate
+
 
 # Create your views here.
 
@@ -11,8 +15,11 @@ class Register(APIView):
     def post(self,request):
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
+            user = serializer.save()
+            token = RefreshToken.for_user(user)
+            data = serializer.data
+            data["tokens"] = {"refresh": str(token), "access": str(token.access_token)}
+            return Response(data,status=status.HTTP_201_CREATED)
         return Response({'message': 'Register Failed!'}, status=status.HTTP_400_BAD_REQUEST)
     
     def get(self,request):
@@ -24,4 +31,4 @@ class Register(APIView):
         if serializer:
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({'message': 'Couldn\'t Retrieve Users}'}, status=status.HTTP_400_BAD_REQUEST)
-    
+
