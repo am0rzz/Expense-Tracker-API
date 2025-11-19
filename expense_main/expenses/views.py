@@ -14,8 +14,11 @@ class ExpenseViewSet(viewsets.ViewSet):
         """
         Retrieve all models using a GET request.
         """
-        queryset = Expense.objects.filter(owner=self.request.user)
-        serializer = ExpenseSerializer(queryset, many=True)
+        try:
+            queryset = Expense.objects.filter(owner=self.request.user)
+            serializer = ExpenseSerializer(queryset, many=True)
+        except:
+            return Response({'message': 'You must be logged in!'}, status=status.HTTP_401_UNAUTHORIZED)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
     
