@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.db import models
 from django.core.validators import MinValueValidator 
 from decimal import Decimal
@@ -19,6 +21,7 @@ class Expense(models.Model):
         "OT" : "Others"
     }
     category = models.CharField(max_length=2, choices=category_choices, default="OT")
+    date_added = date.today()
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     def __str__(self):
         return self.title
