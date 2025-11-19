@@ -6,7 +6,8 @@ class ExpenseAdmin(admin.ModelAdmin):
     list_display = [
         'title',
         'amount',
-        'owner'
+        'owner',
+        'date_added'
     ]
     list_filter = ['category']
 
