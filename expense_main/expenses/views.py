@@ -5,6 +5,9 @@ from .serializers import ExpenseSerializer
 from rest_framework.response import Response
 from .models import Expense
 from rest_framework import status
+from .filters import ExpenseFilter
+from django_filters import rest_framework as filters
+
 # Create your views here.
 
 
@@ -16,7 +19,9 @@ class ExpenseViewSet(viewsets.ViewSet):
         """
         try:
             queryset = Expense.objects.filter(owner=self.request.user)
-            serializer = ExpenseSerializer(queryset, many=True)
+            f = ExpenseFilter(request.GET, queryset=queryset)
+            qs = f.qs
+            serializer = ExpenseSerializer(qs, many=True)
         except:
             return Response({'message': 'You must be logged in!'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -38,9 +43,10 @@ class ExpenseViewSet(viewsets.ViewSet):
         """
         Create a new Model using a POST request
         """
+        request.data["owner"] = self.request.user.id
         serializer = ExpenseSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(owner=self.request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
